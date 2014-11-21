@@ -4,27 +4,49 @@ var gulp = require('gulp'),
     nib = require('nib'),
     nodemon = require('gulp-nodemon'),
     livereload = require('gulp-livereload'),
+    del = require('del'),
 
-    stylesAssetsPath = 'client/styles/**/*.styl';
+    stylesAssetsPath = 'client/styles/**/*.styl',
+    stylesPublicPath = 'public/styles';
 
+/**
+ * Styles.
+ */
 gulp.task('styles', function () {
   return gulp.src(stylesAssetsPath)
-    .pipe(changed('public/styles'))
+    .pipe(changed(stylesPublicPath))
     .pipe(stylus({
       use: [nib()],
       import: ['nib']
     }))
-    .pipe(gulp.dest('public/styles'));
+    .pipe(gulp.dest(stylesPublicPath))
+    .pipe(livereload());
 });
 
+/**
+ * Watchers.
+ */
 gulp.task('watch', function () {
   gulp.watch(stylesAssetsPath, ['styles']);
-})
+});
 
+/**
+ * Cleaners.
+ */
+gulp.task('clean', function () {
+  del(stylesPublicPath + '/**');
+});
+
+/**
+ * Development helpers.
+ */
 gulp.task('dev', function () {
   nodemon({ script: 'bin/www', ext: 'js jade' })
     .on('start', ['watch'])
     .on('change', ['watch']);
 });
 
-gulp.task('default', ['styles', 'dev']);
+/**
+ * Default task.
+ */
+gulp.task('default', ['clean', 'styles', 'dev']);
