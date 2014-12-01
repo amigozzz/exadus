@@ -7,7 +7,9 @@ var gulp = require('gulp'),
     del = require('del'),
 
     stylesAssetsPath = 'client/styles/**/*.styl',
-    stylesPublicPath = 'public/styles';
+    stylesPublicPath = 'public/styles',
+    scriptsAssetsPath = 'client/scripts/**/*.js',
+    scriptsPublicPath = 'public/scripts';
 
 /**
  * Styles.
@@ -24,24 +26,42 @@ gulp.task('styles', function () {
 });
 
 /**
+ * Scripts.
+ */
+gulp.task('scripts', function () {
+  return gulp.src(scriptsAssetsPath)
+    .pipe(changed(scriptsPublicPath))
+    .pipe(gulp.dest(scriptsPublicPath))
+    .pipe(livereload());
+});
+
+/**
  * Watchers.
  */
 gulp.task('watch', function () {
   gulp.watch(stylesAssetsPath, ['styles']);
-});
+  gulp.watch(scriptsAssetsPath, ['scripts']);
+}); 
 
 /**
  * Cleaners.
  */
 gulp.task('clean', function () {
-  del(stylesPublicPath + '/**');
+  del([
+    stylesPublicPath + '/**',
+    scriptsPublicPath + '/**'
+  ]);
 });
 
 /**
  * Development helpers.
  */
 gulp.task('dev', function () {
-  nodemon({ script: 'bin/www', ext: 'js jade' })
+  nodemon({
+    script: 'bin/www',
+    ext: 'js jade',
+    ignore: ['client/**', 'public/**']
+  })
     .on('start', ['watch'])
     .on('change', ['watch']);
 });
@@ -49,4 +69,4 @@ gulp.task('dev', function () {
 /**
  * Default task.
  */
-gulp.task('default', ['clean', 'styles', 'dev']);
+gulp.task('default', ['clean', 'styles', 'scripts', 'dev']);
