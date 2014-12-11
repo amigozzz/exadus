@@ -4,6 +4,8 @@ var gulp = require('gulp'),
     nib = require('nib'),
     nodemon = require('gulp-nodemon'),
     livereload = require('gulp-livereload'),
+    plumber = require('gulp-plumber'),
+    runSequence = require('run-sequence')
     del = require('del'),
 
     stylesAssetsPath = 'client/styles/**/*.styl',
@@ -16,6 +18,7 @@ var gulp = require('gulp'),
  */
 gulp.task('styles', function () {
   return gulp.src(stylesAssetsPath)
+    .pipe(plumber())
     .pipe(changed(stylesPublicPath))
     .pipe(stylus({
       use: [nib()],
@@ -30,6 +33,7 @@ gulp.task('styles', function () {
  */
 gulp.task('scripts', function () {
   return gulp.src(scriptsAssetsPath)
+    .pipe(plumber())
     .pipe(changed(scriptsPublicPath))
     .pipe(gulp.dest(scriptsPublicPath))
     .pipe(livereload());
@@ -48,8 +52,8 @@ gulp.task('watch', function () {
  */
 gulp.task('clean', function () {
   del([
-    stylesPublicPath + '/**',
-    scriptsPublicPath + '/**'
+    scriptsPublicPath,
+    stylesPublicPath
   ]);
 });
 
@@ -69,4 +73,6 @@ gulp.task('dev', function () {
 /**
  * Default task.
  */
-gulp.task('default', ['clean', 'styles', 'scripts', 'dev']);
+gulp.task('default', function (callback) {
+  runSequence('clean', ['styles', 'scripts'], 'dev', callback);
+});
