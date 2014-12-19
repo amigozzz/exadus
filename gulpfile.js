@@ -50,11 +50,11 @@ gulp.task('watch', function () {
 /**
  * Cleaners.
  */
-gulp.task('clean', function () {
+gulp.task('clean', function (cb) {
   del([
     scriptsPublicPath,
     stylesPublicPath
-  ]);
+  ], cb);
 });
 
 /**
