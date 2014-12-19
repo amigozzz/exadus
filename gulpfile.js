@@ -43,6 +43,7 @@ gulp.task('scripts', function () {
  * Watchers.
  */
 gulp.task('watch', function () {
+  livereload.listen();
   gulp.watch(stylesAssetsPath, ['styles']);
   gulp.watch(scriptsAssetsPath, ['scripts']);
 }); 
