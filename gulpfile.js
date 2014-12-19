@@ -5,7 +5,7 @@ var gulp = require('gulp'),
     nodemon = require('gulp-nodemon'),
     livereload = require('gulp-livereload'),
     plumber = require('gulp-plumber'),
-    runSequence = require('run-sequence')
+    runSequence = require('run-sequence'),
     del = require('del'),
 
     stylesAssetsPath = 'client/styles/**/*.styl',
